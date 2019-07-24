@@ -21,5 +21,11 @@ export default {
   border: 0;
   padding: 0;
   margin: 0;
+  width: 1920px;
+}
+body {
+  border: 0;
+  padding: 0;
+  margin: 0;
 }
 </style>

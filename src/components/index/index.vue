@@ -1,14 +1,18 @@
 <template>
-    <h1> 这是 header </h1>
+  <div class="index-box">
+  </div>
 </template>
-
+  
 <script>
-export default {
-    
-}
+export default {};
 </script>
 
-<style scoped>
-
+ 
+<style lang="scss" scoped>
+.index-box {
+  width: 100%;
+  height: 800px;;
+  background: url('../../assets/images/zuozhu.jpg') no-repeat;
+}
 </style>
 
