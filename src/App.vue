@@ -21,7 +21,8 @@ export default {
   border: 0;
   padding: 0;
   margin: 0;
-  width: 1920px;
+  width: 100%;
+  min-width: 1900px;
 }
 body {
   border: 0;

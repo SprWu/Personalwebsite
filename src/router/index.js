@@ -25,6 +25,14 @@ export default new Router({
         path: '/message/index',
         name: 'message/index',
         component: () => import('@/components/message/message')
+      },{
+        path: '/message/detail',
+        name: 'message/detail',
+        component: () => import('@/components/message/detail')
+      },{
+        path: '/message/editor',
+        name: 'message/editor',
+        component: () => import('@/components/base/editor')
       }]
     },{
       path: '/note',

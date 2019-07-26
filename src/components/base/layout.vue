@@ -1,5 +1,18 @@
 <template>
-  <div>
+  <div class="layout">
+    <el-backtop :right="100" :bottom="100">
+      <div
+        style="{
+        height: 100%;
+        width: 100%;
+        background-color: #f2f5f6;
+        box-shadow: 0 0 6px rgba(0,0,0, .12);
+        text-align: center;
+        line-height: 40px;
+        color: #1989fa;
+      }"
+      >UP</div>
+    </el-backtop>
     <img
       class="operate"
       src="@/assets/images/login.png"
@@ -14,11 +27,16 @@
       <transition name="fade" mode="out-in">
         <router-view />
       </transition>
-      
     </div>
-    
-    
-    <el-dialog :title="'目前只有站主能登录'" :visible.sync="dialogShow" :show-close="false" :close-on-click-modal="false" :close-on-press-escape="false" width="460px">
+
+    <el-dialog
+      :title="'目前只有站主能登录'"
+      :visible.sync="dialogShow"
+      :show-close="false"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+      width="460px"
+    >
       <el-form :model="form">
         <el-form-item label="账户：" :label-width="'120px'">
           <el-input v-model.trim="form.account" autocomplete="off"></el-input>
@@ -37,8 +55,8 @@
 import myNav from "./nav";
 import personInfo from "./personInfo";
 import { Login } from "@/api/login";
-import { getPersonInfo } from "@/api/person"
-import { getToken } from "@/api/token"
+import { getPersonInfo } from "@/api/person";
+import { getToken } from "@/api/token";
 
 export default {
   name: "layout",
@@ -71,8 +89,9 @@ export default {
           this.dialogShow = false;
           if (res.data.code === 200) {
             this.$store.commit("setUserInfo", res.data.data);
+            this.$store.commit("setBadge", res.data.badge);
             this.isLogin = true;
-            localStorage.setItem('token',res.data.token)
+            localStorage.setItem("token", res.data.token);
           }
           //  else if (res.data.code === 0) {
           //   this.$message.error(res.data.data);
@@ -86,31 +105,33 @@ export default {
         });
     },
     logout() {
-      this.$confirm("确认退出？","提示",{
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'info'
-      }).then( () => {
-        this.isLogin = false
-        this.$store.commit('clearUserInfo')
-        localStorage.removeItem('token')
-        this.$message({
-          message: "您已成功退出",
-          type: 'success'
+      this.$confirm("确认退出？", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "info"
+      })
+        .then(() => {
+          this.isLogin = false;
+          this.$store.commit("clearUserInfo");
+          localStorage.removeItem("token");
+          this.$message({
+            message: "您已成功退出",
+            type: "success"
+          });
         })
-      }).catch(() => {})
+        .catch(() => {});
     },
     getUserInfo() {
-      getPersonInfo().then( res => {
-        if(res.data.code === 200) {
+      getPersonInfo().then(res => {
+        if (res.data.code === 200) {
           this.$store.commit("setUserInfo", res.data.data);
+          this.$store.commit("setBadge", res.data.badge);
           this.isLogin = true;
-        } 
-        else{
-          localStorage.removeItem('token')
-          this.isLogin = false
+        } else {
+          localStorage.removeItem("token");
+          this.isLogin = false;
         }
-      })
+      });
     }
   },
   components: {
@@ -118,10 +139,10 @@ export default {
     personInfo
   },
   mounted() {
-    if(this.isLogin) {
-      this.getUserInfo()
+    if (this.isLogin) {
+      this.getUserInfo();
     }
-  },
+  }
 };
 </script>
 
@@ -136,10 +157,11 @@ export default {
 }
 .router {
   display: block;
-  width: 1495px;
+  //width: 1495px;
+  width: 77%;
   min-height: 800px;
-  margin: 3px 0 0 6px;
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, .1);
+  margin: 3px 0 0 0.5%;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
   float: left;
 }
 

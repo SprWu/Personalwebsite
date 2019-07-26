@@ -1,8 +1,5 @@
 <template>
   <div class="nav-box">
-    <div class="login-box">
-      
-    </div>
     <el-menu class="nav" mode="horizontal" :router="true" background-color="#e5e9f2">
       <el-menu-item index="/index" default-active>我的主页</el-menu-item>
       <el-menu-item index="/message/index">我的文章</el-menu-item>
@@ -19,7 +16,7 @@ export default {};
 
 <style lang="scss" scoped>
 .nav-box {
-  width: 1920px;
+  width: 100%;
   height: 61px;
   background-color: #e5e9f2;
   .nav {
