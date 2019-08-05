@@ -32,7 +32,7 @@ export default new Router({
       },{
         path: '/message/editor',
         name: 'message/editor',
-        component: () => import('@/components/base/editor')
+        component: () => import('@/components/message/msgEditor')
       }]
     },{
       path: '/note',

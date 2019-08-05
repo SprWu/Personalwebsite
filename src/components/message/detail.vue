@@ -1,6 +1,7 @@
 <template>
   <div>
-    <back />
+    <back></back>
+    <img src="@/assets/images/delete.png" class="delete" title="删除这篇文章" v-if="isLogin" @click="deletemsg">
     <h1>{{ message.title }}</h1>
     <div class="time" v-if="!loading">{{ message.time | formatDate }}</div>
     <div class="content" v-loading="loading">
@@ -10,15 +11,15 @@
 </template>
 
 <script>
-import { getMessageDetail } from "@/api/message";
-import back from "@/components/base/back";
+import { getMessageDetail, deleteMsg } from "@/api/message";
 
 export default {
   name: "messageDetail",
   data() {
     return {
       message: {},
-      loading: true
+      loading: true,
+      isLogin: localStorage.getItem('token') != null
     };
   },
   methods: {
@@ -29,19 +30,40 @@ export default {
           this.message = res.data.data[0];
         }
       });
+    },
+    deletemsg() {
+      this.$confirm("确定删除这篇文章？","提示", {
+         confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "info"
+      }).then(() => {
+          deleteMsg(this.$route.query.id).then( res=> {
+            if(res.data.code === 200) {
+              this.$message({
+                message: "删除成功",
+                type: 'success'
+              })
+              this.$router.push({name: "message/index"})
+            }
+          })
+      }).catch(()=>{})
     }
   },
   created() {
     this.fetchMessageDetail();
     //console.log(this.$route.query.id)
-  },
-  components: {
-    back
   }
 };
 </script>
 
 <style lang="scss" scoped>
+.delete {
+  position: absolute;
+  width: 36px;
+  height: 36px;
+  left: 1vw;
+  cursor: pointer;
+}
 .time {
   width: auto;
   height: 30px;
@@ -71,5 +93,6 @@ export default {
     word-wrap: break-word; // 使文本内容保留预留空白符但正常换行
     white-space: pre-wrap;
   }
+  
 }
 </style>

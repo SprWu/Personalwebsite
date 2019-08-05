@@ -57,6 +57,7 @@ import personInfo from "./personInfo";
 import { Login } from "@/api/login";
 import { getPersonInfo } from "@/api/person";
 import { getToken } from "@/api/token";
+import { setTimeout } from 'timers';
 
 export default {
   name: "layout",
@@ -88,8 +89,8 @@ export default {
         .then(res => {
           this.dialogShow = false;
           if (res.data.code === 200) {
-            this.$store.commit("setUserInfo", res.data.data);
-            this.$store.commit("setBadge", res.data.badge);
+            // this.$store.commit("setUserInfo", res.data.data);
+            // this.$store.commit("setBadge", res.data.badge);
             this.isLogin = true;
             localStorage.setItem("token", res.data.token);
           }
@@ -98,6 +99,7 @@ export default {
           // }
           this.form.account = "";
           this.form.password = "";
+          setTimeout(() => window.location.reload(), 500)
         })
         .catch(err => {
           this.form.account = "";
@@ -118,6 +120,7 @@ export default {
             message: "您已成功退出",
             type: "success"
           });
+          setTimeout(() => window.location.reload(), 2000)
         })
         .catch(() => {});
     },
@@ -158,6 +161,7 @@ export default {
 .router {
   display: block;
   //width: 1495px;
+  position: relative;
   width: 77%;
   min-height: 800px;
   margin: 3px 0 0 0.5%;

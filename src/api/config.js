@@ -58,8 +58,9 @@ request.interceptors.response.use(response => {
   if (errcode.indexOf('401') > 0) {
     localStorage.clear();
     Message.error({
-      message: errcode
+      message: err.response.data.data
     })
+    //setTimeout(() => window.location.reload(), 1000)
   } else if(errcode.indexOf('400') > 0) {
     Message.error({
         message: errcode

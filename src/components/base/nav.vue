@@ -20,12 +20,14 @@ export default {};
   height: 61px;
   background-color: #e5e9f2;
   .nav {
-    width: 1000px;
+    width: 60vw;
+    min-width: 600px;
     position: absolute;
-    left: 600px;
+    left: 31vw;
     .el-menu-item {
-      width: 100px;
-      margin: 0 50px 0 50px;
+      width: 5vw;
+      margin: 0 2vw 0 2vw;
+      text-align: left;
     }
     a {
       text-decoration: none;

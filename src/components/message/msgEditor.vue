@@ -1,6 +1,8 @@
 <template>
   <div class="edit-box">
-    标题：
+    <back />
+    <submit @clicksub="submit" />
+    <b>标题：</b>
     <el-input
       class="title"
       type="text"
@@ -9,20 +11,47 @@
       maxlength="30"
       show-word-limit
     ></el-input>
-
+    <br />
+    <br />
+    <b>图片地址：</b>
+    <el-input class="imgurl" type="text" placeholder="请输入图片地址" v-model="imgurl"></el-input>
+    <br />
+    <br />
+    <p>
+      <b>文章概要：</b>
+    </p>
+    <el-input
+      class="summary"
+      type="textarea"
+      :row="2"
+      :autosize="{ minRows: 2, maxRows: 4}"
+      placeholder="请输入文章概要"
+      maxlength="130"
+      v-model="summary"
+    ></el-input>
+    <br />
+    <br />
+    <p>
+      <b>文章内容：</b>
+    </p>
     <div class="edit-container">
-      <quill-editor v-model="editorContent" ref="quillEditor" :options="editorOption"></quill-editor>
+      <quill-editor v-model="message" ref="quillEditor" :options="editorOption"></quill-editor>
     </div>
   </div>
 </template>
 
 <script>
+import { submitMsg } from "@/api/message"
+import { setTimeout } from 'timers';
+
 export default {
-  name: "editor",
+  name: "msgEditor",
   data() {
     return {
       title: "",
-      editorContent: "",
+      imgurl: "",
+      summary: "",
+      message: "",
       editorOption: {
         modules: {
           toolbar: [
@@ -48,6 +77,29 @@ export default {
         theme: "snow"
       }
     };
+  },
+  methods: {
+    submit() {
+      if(this.title == '' || this.imgurl == '' || this.summary == '' || this.message == '') {
+        this.$message.error("请填写完整")
+        return false;
+      }
+      let data = {
+          title: this.title,
+          imgurl: this.imgurl,
+          summary: this.summary,
+          message: this.message
+      };
+      submitMsg(data).then( res=> {
+        if(res.data.code === 200) {
+          this.$message({
+            message: "发表成功！",
+            type: 'success'
+          })
+          this.$router.push({name: "message/index"})
+        }
+      })
+    }
   }
 };
 </script>
@@ -62,11 +114,17 @@ export default {
   .title {
     width: 600px;
   }
+  .imgurl {
+    width: 600px;
+  }
+  .summary {
+    width: 1000px;
+  }
   .edit-container {
     margin-top: 30px;
   }
   .ql-editor {
-      height: 300px !important;
+    height: 300px !important;
   }
 }
 </style>

@@ -11,10 +11,14 @@ import imageResize from 'quill-image-resize-module';
 import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
+import Back from "@/components/base/back";
+import submit from "@/components/base/submit"
 
 Vue.config.productionTip = false
 
 Vue.use(elementUI)
+Vue.component('back', Back) // 全局注册自定义组件
+Vue.component('submit', submit)
 
 
 Quill.register('modules/imageResize', imageResize);

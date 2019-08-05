@@ -9,6 +9,11 @@
         <li>邮箱： <span style="color:rgba(16,16,16,1);">{{ userInfo.email }}</span></li>
       </ul>
     </div>
+    <div class="contact">
+      <img class="contact-logo" src="@/assets/images/wx.png" title="微信">
+      <img class="contact-logo" src="@/assets/images/qq.png" title="QQ">
+      <img class="contact-logo" src="@/assets/images/weibo.png" title="微博">
+    </div>
     <div class="tag">
       <el-badge :value="badge.message" class="item" type="primary">
         <el-tag>文章</el-tag>
@@ -86,6 +91,20 @@ export default {
       color: #ccc;
       height: 30px;
       line-height: 30px;
+    }
+  }
+  .contact {
+    width: auto;
+    height: 50px;
+    margin: 20px 0 0 106px;
+    float: left;
+
+    .contact-logo {
+      float: left;
+      margin-right: 30px;
+      width: 36px;
+      height: 36px;
+      cursor: pointer;
     }
   }
 }
