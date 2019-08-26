@@ -15,12 +15,11 @@ export default {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
+  margin: 0 auto;
   color: #2c3e50;
   border: 0;
   padding: 0;
   width: 100vw;
-  min-width: 1900px;
 }
 body {
   border: 0;

@@ -21,12 +21,14 @@
       v-if="!isLogin"
     />
     <img class="operate" src="@/assets/images/logout.png" title="退出" @click="logout" v-else />
-    <my-nav></my-nav>
-    <person-info style="float: left"></person-info>
+    <my-nav :islogin="!isLogin"></my-nav>
+    <div class="body">
+      <person-info style="float: left"></person-info>
     <div class="router">
       <transition name="fade" mode="out-in">
         <router-view />
       </transition>
+    </div>
     </div>
 
     <el-dialog
@@ -157,6 +159,10 @@ export default {
   left: 10px;
   top: 10px;
   cursor: pointer;
+}
+.body {
+  margin: 0 auto;
+  width: 1900px;
 }
 .router {
   display: block;

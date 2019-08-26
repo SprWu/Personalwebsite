@@ -57,6 +57,7 @@ export default {
     height: 230px;
     border-radius: 50%;
     margin-top: -30px;
+    margin-left: 85px;
   }
 
   .tag {

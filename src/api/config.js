@@ -13,7 +13,7 @@ NProgress.configure({
   showSpinner: false
 })
 
-const baseURL = "http://localhost"
+const baseURL = "http://192.168.0.102"
 const port = 9000
 
 const request = axios.create({
@@ -60,10 +60,10 @@ request.interceptors.response.use(response => {
     Message.error({
       message: err.response.data.data
     })
-    //setTimeout(() => window.location.reload(), 1000)
+    setTimeout(() => window.location.reload(), 1000)
   } else if(errcode.indexOf('400') > 0) {
     Message.error({
-        message: errcode
+        message: err.response.data.data
     })
   } else {
     localStorage.clear()
