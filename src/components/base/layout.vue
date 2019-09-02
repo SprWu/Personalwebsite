@@ -24,11 +24,11 @@
     <my-nav :islogin="!isLogin"></my-nav>
     <div class="body">
       <person-info style="float: left"></person-info>
-    <div class="router">
-      <transition name="fade" mode="out-in">
-        <router-view />
-      </transition>
-    </div>
+      <div class="router">
+        <transition name="fade" mode="out-in">
+          <router-view />
+        </transition>
+      </div>
     </div>
 
     <el-dialog
@@ -38,6 +38,7 @@
       :close-on-click-modal="false"
       :close-on-press-escape="false"
       width="460px"
+      center
     >
       <el-form :model="form">
         <el-form-item label="账户：" :label-width="'120px'">
@@ -47,8 +48,10 @@
           <el-input type="password" v-model.trim="form.password" autocomplete="off"></el-input>
         </el-form-item>
       </el-form>
-      <el-button @click="cancel">取 消</el-button>
-      <el-button type="primary" @click="submit">登 录</el-button>
+      <center>
+        <el-button @click="cancel">取 消</el-button>
+        <el-button type="primary" @click="submit">登 录</el-button>
+      </center>
     </el-dialog>
   </div>
 </template>
@@ -59,7 +62,7 @@ import personInfo from "./personInfo";
 import { Login } from "@/api/login";
 import { getPersonInfo } from "@/api/person";
 import { getToken } from "@/api/token";
-import { setTimeout } from 'timers';
+import { setTimeout } from "timers";
 
 export default {
   name: "layout",
@@ -101,7 +104,7 @@ export default {
           // }
           this.form.account = "";
           this.form.password = "";
-          setTimeout(() => window.location.reload(), 500)
+          setTimeout(() => window.location.reload(), 500);
         })
         .catch(err => {
           this.form.account = "";
@@ -122,7 +125,7 @@ export default {
             message: "您已成功退出",
             type: "success"
           });
-          setTimeout(() => window.location.reload(), 2000)
+          setTimeout(() => window.location.reload(), 2000);
         })
         .catch(() => {});
     },

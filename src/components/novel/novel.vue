@@ -19,7 +19,7 @@
         <el-form-item label="总章节数" prop="CatalogCount">
           <el-input v-model="novelInfo.CatalogCount"></el-input>
         </el-form-item>
-        <el-form-item label="小说引言">
+        <el-form-item label="小说引言" prop="CatalogCount">
           <el-input v-model="novelInfo.summary"></el-input>
         </el-form-item>
         <el-form-item label="封面链接" prop="imgUrl">
@@ -34,7 +34,7 @@
     <el-dialog title="上传小说" :visible="isShow_file" :close-on-click-modal="false" center>
       <form
         ref="fileForm"
-        action="http://192.168.0.102:9000/uploadFile"
+        action="http://localhost:9000/uploadFile"
         method="POST"
         enctype="multipart/form-data"
         target="_blank"
@@ -68,6 +68,7 @@ export default {
         name: [{ required: true, message: "请填写小说名" }],
         auther: [{ required: true, message: "请填写作者名" }],
         CatalogCount: [{ required: true, message: "请填写小说总章节数" }],
+        summary: [{required: true, message: "请填写小说概要/引言"}],
         imgUrl: [{ required: true, message: "请填写小说封面链接" }]
       }
     };
@@ -93,6 +94,10 @@ export default {
                 summary: "",
                 imgUrl: ""
               };
+              this.$message({
+                message: "小说信息上传成功",
+                type: "success"
+              })
               this.isShow_info = false;
               this.isShow_file = true;
             } else {
@@ -110,6 +115,7 @@ export default {
       } else {
         this.$refs.fileForm.submit();
         this.isShow_file = false;
+        window.location.reload();
       }
     }
   },

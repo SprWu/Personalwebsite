@@ -14,7 +14,7 @@
         <tr>
           <td>密　码：</td>
           <td class="input-box">
-            <input type="text" v-model="passWord" class="input" />
+            <input type="password" v-model="passWord" class="input" />
           </td>
         </tr>
       </table>

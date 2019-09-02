@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="detail-box">
     <back></back>
     <img src="@/assets/images/delete.png" class="delete" title="删除这篇文章" v-if="isLogin" @click="deletemsg">
     <h1>{{ message.title }}</h1>
@@ -57,6 +57,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.detail-box {
+  text-align: center;
+}
 .delete {
   position: absolute;
   width: 36px;

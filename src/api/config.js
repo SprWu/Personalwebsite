@@ -13,7 +13,7 @@ NProgress.configure({
   showSpinner: false
 })
 
-const baseURL = "http://192.168.0.102"
+const baseURL = "http://localhost"
 const port = 9000
 
 const request = axios.create({
@@ -75,4 +75,5 @@ request.interceptors.response.use(response => {
   return Promise.reject(err)
 })
 
+export { baseURL }
 export default request

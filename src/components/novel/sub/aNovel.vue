@@ -3,7 +3,7 @@
     <img :src="novelData.imgUrl" class="novel-img" />
     <div class="novel-name">{{ novelData.name }}</div>
     <div class="novel-auther">---{{ novelData.auther }}</div>
-    <div class="novel-summary">举头三尺无神明，掌心三寸是人间。这是耳根继《仙逆》《求魔》《我欲封天》《一念永恒》后，创作的第五部长篇小说《三寸人间》</div>
+    <div class="novel-summary">{{ novelData.summary }}</div>
     <div class="novel-catalog">共{{ novelData.CatalogCount }}章</div>
   </div>
 </template>

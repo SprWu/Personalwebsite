@@ -11,7 +11,7 @@
       <div class="button" v-show="info.id != info.number" @click="toNext">下一章</div>
     </div>
     <div class="some-info">{{ info.name }}</div>
-    <div class="text-container" v-if="startR" @click="showToolBar">
+    <div class="text-container" ref="box" v-if="startR" @click="showToolBar">
       <h3>{{ messageData.title }}</h3>
       <p v-for="(message, i) in messageData.message" :key="i">{{ message }}</p>
     </div>
@@ -38,6 +38,7 @@
 <script>
 import { setTimeout } from "timers";
 import { getNovelCatalog, getNovel } from "@/api/novel";
+import { baseURL } from "@/api/config"
 
 export default {
   name: "mtext",
@@ -93,16 +94,18 @@ export default {
     toNext() {
       this.info.id++;
       location.replace(
-        `http://192.168.0.102:8080/#/m.novel/text?name=${this.info.name}&number=${this.info.number}&id=${this.info.id}&s`
+        `${baseURL}:8080/#/m.novel/text?name=${this.info.name}&number=${this.info.number}&id=${this.info.id}&s`
       );
       this.getMessage();
+      this.$refs.box.scrollTop = 0
     },
     toPre() {
       this.info.id--;
       location.replace(
-        `http://192.168.0.102:8080/#/m.novel/text?name=${this.info.name}&number=${this.info.number}&id=${this.info.id}&s`
+        `${baseURL}:8080/#/m.novel/text?name=${this.info.name}&number=${this.info.number}&id=${this.info.id}&s`
       );
       this.getMessage();
+      this.$refs.box.scrollTop = 0
     },
     logout() {
       let flag = confirm("确定要退出？");
@@ -125,10 +128,11 @@ export default {
     topage(number) {
       this.info.id = number
       location.replace(
-        `http://192.168.0.102:8080/#/m.novel/text?name=${this.info.name}&number=${this.info.number}&id=${this.info.id}&goto`
+        `${baseURL}:8080/#/m.novel/text?name=${this.info.name}&number=${this.info.number}&id=${this.info.id}&goto`
       );
       this.catalogShow = false
       this.getMessage()
+      this.$refs.box.scrollTop = 0
     }
   },
   created() {

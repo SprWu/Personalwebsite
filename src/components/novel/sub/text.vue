@@ -18,6 +18,7 @@
 
 <script>
 import { getNovel } from "@/api/novel";
+import { baseURL } from "@/api/config"
 export default {
   name: "txt",
   data() {
@@ -56,15 +57,14 @@ export default {
     next() {
       this.info.id++;
       location.replace(
-        `http://192.168.0.102:8080/#/novel/text?name=${this.info.name}&id=${this.info.id}`
+        `${baseURL}/#/novel/text?name=${this.info.name}&id=${this.info.id}`
       );
       this.init();
-      this.$refs.textBox.scrollTop = 0;
     },
     pre() {
       this.info.id--;
       location.replace(
-        `http://192.168.0.102:8080/#/novel/text?name=${this.info.name}&id=${this.info.id}`
+        `${baseURL}/#/novel/text?name=${this.info.name}&id=${this.info.id}`
       );
       this.init();
     }
