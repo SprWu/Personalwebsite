@@ -41,16 +41,83 @@
       center
     >
       <el-form :model="form">
-        <el-form-item label="账户：" :label-width="'120px'">
-          <el-input v-model.trim="form.account" autocomplete="off"></el-input>
+        <el-form-item label="用户名：" :label-width="'120px'">
+          <el-input v-model.trim="form.username" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="密码：" :label-width="'120px'">
+        <el-form-item label="密　码：" :label-width="'120px'">
           <el-input type="password" v-model.trim="form.password" autocomplete="off"></el-input>
         </el-form-item>
       </el-form>
       <center>
         <el-button @click="cancel">取 消</el-button>
         <el-button type="primary" @click="submit">登 录</el-button>
+        <div class="tip">
+          还没注册？
+          <a href="#" @click.prevent="toRegister">点我加入</a>
+        </div>
+      </center>
+    </el-dialog>
+    <el-dialog
+      :title="'目前只限QQ邮箱注册'"
+      :visible.sync="registerShow"
+      :show-close="false"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+      width="560px"
+    >
+      <el-form :model="registerFrom" :rules="rules" ref="register">
+        <el-form-item label="用户名：" :label-width="'120px'" prop="username">
+          <el-input
+            v-model.trim="registerFrom.username"
+            autocomplete="off"
+            @keyup="value=value.replace(/\s+/g,'')"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="密码：" :label-width="'120px'" prop="password">
+          <el-input type="password" v-model.trim="registerFrom.password" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="确认密码：" :label-width="'120px'" prop="confirm">
+          <el-input type="password" v-model.trim="registerFrom.confirm" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="性别：" :label-width="'120px'">
+          <el-radio-group v-model="registerFrom.sex">
+            <el-radio :label="'男'">男</el-radio>
+            <el-radio :label="'女'">女</el-radio>
+            <el-radio :label="'保密'">保密</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="职位：" :label-width="'120px'">
+          <el-input v-model.trim="registerFrom.work" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="头像：" :label-width="'120px'">
+          <el-input
+            v-model.trim="registerFrom.imgSrc"
+            autocomplete="off"
+            placeholder="填写头像imgsrc，目前不支持图片上传"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="QQ邮箱：" :label-width="'120px'" prop="email">
+          <el-input
+            v-model.trim="registerFrom.email"
+            autocomplete="off"
+            :maxlength="17"
+            @keyup="value=value.replace(/\s+/g,'')"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="验证码：" :label-width="'120px'" prop="reg">
+          <el-input
+            v-model.trim="registerFrom.reg"
+            style="width: 100px"
+            :maxlength="4"
+            :minlength="4"
+            placeholder="4位验证码"
+          ></el-input>
+          <el-button type="primary" @click="send" :disabled="canSend">{{ buttonText }}</el-button>
+        </el-form-item>
+      </el-form>
+      <center>
+        <el-button @click="cancel">取 消</el-button>
+        <el-button type="primary" @click="register" :disabled="canRegister">注 册</el-button>
       </center>
     </el-dialog>
   </div>
@@ -59,31 +126,140 @@
 <script>
 import myNav from "./nav";
 import personInfo from "./personInfo";
-import { Login } from "@/api/login";
-import { getPersonInfo } from "@/api/person";
+import { Login, Register, sendReg } from "@/api/login";
+import { getPersonInfo, getRole } from "@/api/person";
 import { getToken } from "@/api/token";
 import { setTimeout } from "timers";
 
 export default {
   name: "layout",
   data() {
+    var validatePass2 = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error("请再次输入密码"));
+      } else if (value !== this.registerFrom.password) {
+        callback(new Error("两次输入密码不一致!"));
+      } else {
+        callback();
+      }
+    };
+    var emailReg = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error("请输入QQ邮箱"));
+      } else if (!/[1-9]\d{4,10}@qq.com/.test(value)) {
+        callback(new Error("邮箱不正确"));
+      } else {
+        callback();
+      }
+    };
     return {
       isLogin: getToken(),
       dialogShow: false,
+      registerShow: false,
+      canRegister: true,
+      canSend: false,
+      buttonText: "发送验证码到邮箱",
       form: {
-        account: "",
+        username: "",
         password: ""
+      },
+      registerFrom: {
+        username: "",
+        password: "",
+        confrim: "",
+        sex: "保密",
+        work: "",
+        email: "",
+        imgSrc: "",
+        reg: ""
+      },
+      rules: {
+        username: [{ required: true, message: "用户名不能为空" }],
+        password: [{ required: true, message: "密码不能为空" }],
+        confirm: [{ validator: validatePass2 }],
+        email: [{ validator: emailReg }]
       }
     };
   },
   methods: {
     cancel() {
       this.dialogShow = false;
+      this.registerShow = false;
       this.form.account = "";
       this.form.password = "";
+      this.registerFrom = {
+        username: "",
+        password: "",
+        confrim: "",
+        sex: "保密",
+        work: "",
+        email: "",
+        imgSrc: "",
+        reg: ""
+      };
+    },
+    toRegister() {
+      this.dialogShow = false;
+      this.registerShow = true;
+    },
+    send() {
+      this.$refs["register"].validate(valid => {
+        if (valid) {
+          sendReg({
+            email: this.registerFrom.email.replace(/\s+/g, ""),
+            username: this.registerFrom.username
+          }).then(res => {
+            if (res.data.code === 200) {
+              this.canSend = true;
+              this.canRegister = false;
+              this.$message({
+                dangerouslyUseHTMLString: true,
+                message: `发送成功，去<a href="https://mail.qq.com/" target="_blank">邮箱</a>查看`
+              });
+              this.countDown(60);
+            }
+          });
+        } else {
+          return false;
+        }
+      });
+    },
+    register() {
+      this.$refs["register"].validate(valid => {
+        if (valid) {
+          if (this.registerFrom.reg == "") {
+            this.$message.error("验证码不能为空！");
+            return false;
+          }
+          Register(this.registerFrom).then(res => {
+            if (res.data.code == 200) {
+              this.$message({
+                message: "注册成功，快去登录吧！",
+                type: "success"
+              });
+              (this.registerFrom = {
+                username: "",
+                password: "",
+                confrim: "",
+                sex: "保密",
+                work: "",
+                email: "",
+                imgSrc: "",
+                reg: ""
+              }),
+                (this.registerShow = false);
+              //this.dialogShow = true;
+            } else {
+              this.$message.error(res.data.data);
+            }
+          });
+        } else {
+          return false;
+        }
+      });
     },
     submit() {
-      if (this.form.account.trim() == "" || this.form.password.trim() == "") {
+      if (this.form.username.trim() == "" || this.form.password.trim() == "") {
         this.$message({
           message: "请填写完整",
           type: "warning"
@@ -92,22 +268,19 @@ export default {
       }
       Login(this.form)
         .then(res => {
-          this.dialogShow = false;
           if (res.data.code === 200) {
             // this.$store.commit("setUserInfo", res.data.data);
             // this.$store.commit("setBadge", res.data.badge);
             this.isLogin = true;
             localStorage.setItem("token", res.data.token);
+            localStorage.setItem("name", res.data.username);
+            this.form.username = "";
+            this.form.password = "";
+            setTimeout(() => window.location.reload(), 500);
           }
-          //  else if (res.data.code === 0) {
-          //   this.$message.error(res.data.data);
-          // }
-          this.form.account = "";
-          this.form.password = "";
-          setTimeout(() => window.location.reload(), 500);
         })
         .catch(err => {
-          this.form.account = "";
+          this.form.username = "";
           this.form.password = "";
         });
     },
@@ -120,7 +293,8 @@ export default {
         .then(() => {
           this.isLogin = false;
           this.$store.commit("clearUserInfo");
-          localStorage.removeItem("token");
+          //localStorage.removeItem("token");
+          localStorage.clear()
           this.$message({
             message: "您已成功退出",
             type: "success"
@@ -140,6 +314,20 @@ export default {
           this.isLogin = false;
         }
       });
+      getRole().then(res => {
+        if(res.data.code === 200) {
+          this.$store.commit("setRole", res.data.data)
+        }
+      })
+    },
+    countDown(index) {
+      if (index != 0) {
+        this.buttonText = `重新发送(${index}秒)`;
+        setTimeout(() => this.countDown(index - 1), 1000);
+      } else {
+        this.buttonText = "发送验证码到邮箱";
+        this.canSend = false;
+      }
     }
   },
   components: {
@@ -186,5 +374,10 @@ export default {
 .fade-enter,
 .fade-leave-active {
   opacity: 0;
+}
+.tip {
+  width: 100%;
+  margin: 6px auto;
+  text-align: center;
 }
 </style>

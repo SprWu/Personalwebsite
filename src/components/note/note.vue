@@ -1,15 +1,23 @@
 <template>
   <div class="note-box">
-    <img src="@/assets/images/report.png" class="report" @click="dialogShow = true" v-if="isLogin" />
+    <img src="@/assets/images/report.png" class="report" @click="dialogShow = true" v-if="role" />
     <div class="note" v-for="text in list" :key="text.id">
       <p>{{ text.text }}</p>
     </div>
-    <el-dialog title="新的笔记" :visible.sync="dialogShow" :modal="false" :close-on-click-modal="false" center>
+    <el-dialog
+      title="新的笔记"
+      :visible.sync="dialogShow"
+      :modal="false"
+      :close-on-click-modal="false"
+      center
+    >
       <el-input type="textarea" :rows="5" v-model="text" autofocus></el-input>
-      <center>
-                  <el-button @click="dialogShow = false">取 消</el-button>
+      <footer style="marginTop: 20px">
+        <center>
+        <el-button @click="dialogShow = false">取 消</el-button>
         <el-button type="primary" @click="createNote">上传</el-button>
       </center>
+      </footer>
     </el-dialog>
   </div>
 </template>
@@ -21,7 +29,7 @@ export default {
   name: "note",
   data() {
     return {
-      isLogin: localStorage.getItem("token") != null,
+      role: this.$store.getters.role == "A",
       dialogShow: false,
       text: "",
       list: [{ id: 0, text: "暂无笔记！" }]
@@ -36,19 +44,19 @@ export default {
       });
     },
     createNote() {
-     if(this.text.trim() == "") {
-         this.$message.error("请输入内容！")
-         return
-     }
-      newNote({text: this.text}).then(res => {
+      if (this.text.trim() == "") {
+        this.$message.error("请输入内容！");
+        return;
+      }
+      newNote({ text: this.text }).then(res => {
         if (res.data.code === 200) {
           this.text = "";
           this.$message({
             message: res.data.data,
             type: "success"
           });
-          this.dialogShow = false
-          this.init()
+          this.dialogShow = false;
+          this.init();
         }
       });
     }

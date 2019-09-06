@@ -65,6 +65,10 @@ request.interceptors.response.use(response => {
     Message.error({
         message: err.response.data.data
     })
+  } else if(errcode.indexOf('429') > 0) {
+    Message.error({
+      message: err.response.data
+    })
   } else {
     localStorage.clear()
     Message.error({

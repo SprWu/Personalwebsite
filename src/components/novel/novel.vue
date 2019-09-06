@@ -5,6 +5,7 @@
       alt="upload"
       class="upload"
       title="上传小说"
+      v-if="role"
       @click="isShow_info = true"
     />
     <a-novel v-for="novel in novelData" :key="novel.id" :novelData="novel" class="anovel"></a-novel>
@@ -53,6 +54,7 @@ export default {
   name: "novel",
   data() {
     return {
+      role: this.$store.getters.role == 'A',
       novelData: [],
       startR: false,
       isShow_info: false,

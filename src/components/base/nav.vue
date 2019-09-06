@@ -5,7 +5,7 @@
       <el-menu-item index="/message/index">我的文章</el-menu-item>
       <el-menu-item index="/note/index" >some笔记</el-menu-item>
       <el-menu-item index="/novel/index" :disabled="islogin" title="目前只限登陆后可看">看看小说</el-menu-item>
-      <el-menu-item index="#"><a href="http://www.xishupo.cn:8080" target="_blank">聊天室</a></el-menu-item>
+      <el-menu-item index="#" disabled="true" title="暂时下线">聊天室</el-menu-item>
     </el-menu>
   </div>
 </template>

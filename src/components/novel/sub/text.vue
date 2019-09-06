@@ -57,14 +57,14 @@ export default {
     next() {
       this.info.id++;
       location.replace(
-        `${baseURL}/#/novel/text?name=${this.info.name}&id=${this.info.id}`
+        `${baseURL}:8080/#/novel/text?name=${this.info.name}&id=${this.info.id}`
       );
       this.init();
     },
     pre() {
       this.info.id--;
       location.replace(
-        `${baseURL}/#/novel/text?name=${this.info.name}&id=${this.info.id}`
+        `${baseURL}:8080/#/novel/text?name=${this.info.name}&id=${this.info.id}`
       );
       this.init();
     }

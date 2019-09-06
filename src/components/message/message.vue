@@ -1,6 +1,6 @@
 <template>
     <div>
-        <el-button type="primary" icon="el-icon-edit" @click="editMessage" v-if="isLogin" plain circle></el-button>
+        <el-button type="primary" icon="el-icon-edit" @click="editMessage" v-if="role" plain circle></el-button>
         <div>
             <msg-box v-for="item in message" :message="item" :key="item.id"></msg-box>
         </div>
@@ -16,7 +16,7 @@ export default {
     data() {
         return {
             message: [],
-            isLogin: localStorage.getItem('token') != null
+            role: this.$store.getters.role == "A"
         }
     },
     methods: {

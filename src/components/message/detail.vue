@@ -1,7 +1,7 @@
 <template>
   <div class="detail-box">
     <back></back>
-    <img src="@/assets/images/delete.png" class="delete" title="删除这篇文章" v-if="isLogin" @click="deletemsg">
+    <img src="@/assets/images/delete.png" class="delete" title="删除这篇文章" v-if="role" @click="deletemsg">
     <h1>{{ message.title }}</h1>
     <div class="time" v-if="!loading">{{ message.time | formatDate }}</div>
     <div class="content" v-loading="loading">
@@ -19,7 +19,7 @@ export default {
     return {
       message: {},
       loading: true,
-      isLogin: localStorage.getItem('token') != null
+      role: this.$store.getters.role == 'A'
     };
   },
   methods: {

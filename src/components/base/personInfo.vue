@@ -1,18 +1,37 @@
 <template>
   <div class="person-info-box">
+    <img src="@/assets/images/setting.png" class="update" @click="showDialog" v-if="userInfo.name != '*'" />
     <img :src="userInfo.imgSrc" class="person-img" />
     <div class="person-info">
       <ul>
-        <li>昵称： <span style="color:rgba(16,16,16,1);">{{ userInfo.name }}</span></li>
-        <li>性别： <span style="color:rgba(16,16,16,1);">{{ userInfo.sex }}</span></li>
-        <li>从事： <span style="color:rgba(16,16,16,1);">{{ userInfo.work }}</span></li>
-        <li>邮箱： <span style="color:rgba(16,16,16,1);">{{ userInfo.email }}</span></li>
+        <li>
+          昵称：
+          <span style="color:rgba(16,16,16,1);">{{ userInfo.name }}</span>
+        </li>
+        <li>
+          性别：
+          <span style="color:rgba(16,16,16,1);">{{ userInfo.sex }}</span>
+        </li>
+        <li>
+          从事：
+          <span style="color:rgba(16,16,16,1);">{{ userInfo.work }}</span>
+        </li>
+        <li>
+          邮箱：
+          <span style="color:rgba(16,16,16,1);">{{ userInfo.email }}</span>
+        </li>
+        <li>
+          微信：
+          <span style="color:rgba(16,16,16,1);">{{ userInfo.weixin }}</span>
+        </li>
+        <li>
+          QQ：
+          <span style="color:rgba(16,16,16,1);">{{ userInfo.qq }}</span>
+        </li>
       </ul>
     </div>
     <div class="contact">
-      <img class="contact-logo" src="@/assets/images/wx.png" title="微信">
-      <img class="contact-logo" src="@/assets/images/qq.png" title="QQ">
-      <img class="contact-logo" src="@/assets/images/weibo.png" title="微博">
+      <img class="contact-logo" src="@/assets/images/weibo.png" title="微博" @click="gotoWeibo" />
     </div>
     <div class="tag">
       <el-badge :value="badge.message" class="item" type="primary">
@@ -25,22 +44,83 @@
         <el-tag>日记</el-tag>
       </el-badge>
     </div>
+    <el-dialog title="编辑用户信息" :visible.sync="dialogShow" :close-on-click-modal="false" width="500px">
+      <footer>
+        <center>
+          <el-form :model="newInfo" label-position="left">
+            <el-form-item label="性别：" :label-width="'60px'" >
+              <el-radio-group v-model="newInfo.sex">
+                <el-radio :label="'男'">男</el-radio>
+                <el-radio :label="'女'">女</el-radio>
+                <el-radio :label="'保密'">保密</el-radio>
+              </el-radio-group>
+            </el-form-item>
+            <el-form-item label="从事：" :label-width="'60px'">
+              <el-input v-model="newInfo.work"></el-input>
+            </el-form-item>
+            <el-form-item label="微信：" :label-width="'60px'">
+              <el-input v-model="newInfo.weixin"></el-input>
+            </el-form-item>
+            <el-form-item label="QQ：" :label-width="'60px'">
+              <el-input v-model="newInfo.qq"></el-input>
+            </el-form-item>
+            <el-form-item label="微博：" :label-width="'60px'">
+              <el-input v-model="newInfo.weibo"></el-input>
+            </el-form-item>
+          </el-form>
+          <el-button @click="dialogShow = false">取 消</el-button>
+          <el-button type="primary" @click="updateInfo">更 新</el-button>
+        </center>
+      </footer>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters } from "vuex";
+import { updateInfo } from "@/api/person"
+import { setTimeout } from 'timers';
 
 export default {
   data() {
     return {
+      dialogShow: false,
+      newInfo: {
+        sex: ""
+      }
     };
   },
+  methods: {
+    gotoWeibo() {
+      if (this.userInfo.weibo != "*") {
+        window.open(this.userInfo.weibo);
+      } else {
+        this.$message({
+          message: "该用户未设置微博"
+        });
+      }
+    },
+    showDialog() {
+      this.newInfo = JSON.parse(JSON.stringify(this.userInfo))
+      this.dialogShow = true
+    },
+    updateInfo() {
+      updateInfo(this.newInfo).then(res => {
+        if(res.data.code === 200) {
+          this.$message({
+            message: res.data.data,
+            type: 'success'
+          })
+          setTimeout(() => {window.location.reload()}, 1000)
+        } else {
+          this.$message.error(res.data.data)
+        }
+      })
+
+    }
+  },
   computed: {
-    ...mapGetters([
-      'userInfo',
-      'badge'
-    ])
+    ...mapGetters(["userInfo", "badge"])
   }
 };
 </script>
@@ -49,9 +129,17 @@ export default {
 .person-info-box {
   width: 400px;
   height: 800px;
+  position: relative;
   margin: 3px 0 0 8px;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-
+  .update {
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    left: 6px;
+    top: 6px;
+    cursor: pointer;
+  }
   .person-img {
     width: 230px;
     height: 230px;
@@ -70,7 +158,7 @@ export default {
     text-align: left;
 
     .item {
-        margin-top: 10px;
+      margin-top: 10px;
     }
   }
 
