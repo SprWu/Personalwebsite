@@ -8,6 +8,13 @@ export function getPersonInfo() {
     })
 }
 
+export function getUserImg() {
+    return request({
+        url: "/getUserImg",
+        method: "GET"
+    })
+}
+
 export function getRole() {
     return request({
         url: "/getRole",

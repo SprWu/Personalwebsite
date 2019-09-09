@@ -24,7 +24,7 @@ export default {
   },
   methods: {
     fetchMessageDetail() {
-      getMessageDetail(this.$route.query.id).then(res => {
+      getMessageDetail({id: this.$route.query.id}).then(res => {
         this.loading = false;
         if (res.data.code === 200) {
           this.message = res.data.data[0];

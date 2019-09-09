@@ -35,7 +35,7 @@
     <el-dialog title="上传小说" :visible="isShow_file" :close-on-click-modal="false" center>
       <form
         ref="fileForm"
-        action="http://localhost:9000/uploadFile"
+        :action="action"
         method="POST"
         enctype="multipart/form-data"
         target="_blank"
@@ -50,6 +50,8 @@
 <script>
 import aNovel from "./sub/aNovel";
 import { getAllNovel, uploadInfo } from "@/api/novel";
+import { baseURL } from "@/api/config"
+
 export default {
   name: "novel",
   data() {
@@ -59,6 +61,7 @@ export default {
       startR: false,
       isShow_info: false,
       isShow_file: false,
+      action: `${baseURL}:9000/uploadFile`,
       novelInfo: {
         name: "",
         auther: "",

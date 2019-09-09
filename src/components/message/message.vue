@@ -21,10 +21,7 @@ export default {
     },
     methods: {
         fetchMessage() {
-            var sql = {
-                sql: "SELECT title,summary,imgurl,id,time FROM message"
-            }
-            getMessage(sql).then( res => {
+            getMessage().then( res => {
                 if(res.data.code === 200) {
                     this.message = res.data.data
                 }

@@ -1,18 +1,17 @@
 import request from "./config"
 
-export function getMessage(data) {
+export function getMessage() {
     return request({
         url: '/message',
-        method: "GET",
-        params: data
+        method: "GET"
     })
 }
 
-export function getMessageDetail(id) {
+export function getMessageDetail(data) {
     return request({
-        url: '/message',
+        url: '/messageDetail',
         method: "GET",
-        params: {sql: `SELECT id,title,message,time FROM message WHERE id=${id}`}
+        params: data
     })
 }
 

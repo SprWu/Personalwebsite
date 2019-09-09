@@ -1,7 +1,20 @@
 <template>
   <div class="person-info-box">
-    <img src="@/assets/images/setting.png" class="update" @click="showDialog" v-if="userInfo.name != '*'" />
-    <img :src="userInfo.imgSrc" class="person-img" />
+    <img
+      src="@/assets/images/setting.png"
+      class="update"
+      @click="showDialog"
+      v-if="userInfo.name != '*'"
+    />
+    <el-popover trigger="click" :disabled="unLogin">
+      <el-button
+        style="marginLeft: 16%"
+        size="middle"
+        type="primary"
+        @click="showUpdate"
+      >更换头像</el-button>
+      <img :src="userInfo.imgSrc" class="person-img" slot="reference" />
+    </el-popover>
     <div class="person-info">
       <ul>
         <li>
@@ -44,11 +57,16 @@
         <el-tag>日记</el-tag>
       </el-badge>
     </div>
-    <el-dialog title="编辑用户信息" :visible.sync="dialogShow" :close-on-click-modal="false" width="500px">
+    <el-dialog
+      title="编辑用户信息"
+      :visible.sync="dialogShow"
+      :close-on-click-modal="false"
+      width="500px"
+    >
       <footer>
         <center>
           <el-form :model="newInfo" label-position="left">
-            <el-form-item label="性别：" :label-width="'60px'" >
+            <el-form-item label="性别：" :label-width="'60px'">
               <el-radio-group v-model="newInfo.sex">
                 <el-radio :label="'男'">男</el-radio>
                 <el-radio :label="'女'">女</el-radio>
@@ -73,21 +91,40 @@
         </center>
       </footer>
     </el-dialog>
+    <el-dialog title="更换头像" :visible.sync="updateShow" width="270px" :close-on-click-modal="false" center>
+      <el-upload
+        class="avatar-uploader"
+        :action="imgUrl"
+        :headers="header"
+        :show-file-list="false"
+        :on-success="handleAvatarSuccess"
+        :before-upload="beforeAvatarUpload"
+      >
+        <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+      </el-upload>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
-import { updateInfo } from "@/api/person"
-import { setTimeout } from 'timers';
+import { updateInfo } from "@/api/person";
+import { setTimeout } from "timers";
+import { baseURL } from "@/api/config";
 
 export default {
   data() {
     return {
+      unLogin: localStorage.getItem('token') == null? true: false,
       dialogShow: false,
+      updateShow: false,
       newInfo: {
         sex: ""
-      }
+      },
+      imgUrl: `${baseURL}:9000/updateUserImg`,
+      header: { token: localStorage.getItem("token") || "null" },
+      imageUrl: ""
     };
   },
   methods: {
@@ -101,23 +138,55 @@ export default {
       }
     },
     showDialog() {
-      this.newInfo = JSON.parse(JSON.stringify(this.userInfo))
-      this.dialogShow = true
+      this.newInfo = JSON.parse(JSON.stringify(this.userInfo));
+      this.dialogShow = true;
+    },
+    showUpdate() {
+      this.imageUrl = this.userInfo.imgSrc
+      this.updateShow = true
     },
     updateInfo() {
       updateInfo(this.newInfo).then(res => {
-        if(res.data.code === 200) {
+        if (res.data.code === 200) {
           this.$message({
             message: res.data.data,
-            type: 'success'
-          })
-          setTimeout(() => {window.location.reload()}, 1000)
+            type: "success"
+          });
+          setTimeout(() => {
+            window.location.reload();
+          }, 1000);
         } else {
-          this.$message.error(res.data.data)
+          this.$message.error(res.data.data);
         }
-      })
-
-    }
+      });
+    },
+    handleAvatarSuccess(res, file) {
+      if(res.code === 200) {
+        this.imageUrl = URL.createObjectURL(file.raw);
+        this.$message({
+          message: res.data,
+          type: 'success'
+        })
+        setTimeout(() => {
+          this.updateShow = false
+          this.userInfo.imgSrc = this.imageUrl // imageUrl 为图片上传成功后的返回
+          //this.userInfo.imgSrc = `${baseURL}:9000/getUserImg?username=${this.userInfo.name}`
+        }, 1000)
+      } else {
+        this.$message.error(res.data)
+      }
+    },
+     beforeAvatarUpload(file) {
+        const isJPG = file.type === 'image/jpeg';
+        const isLt2M = file.size / 1024 / 1024 < 2;
+        if (!isJPG) {
+          this.$message.error('上传头像图片只能是 JPG 格式!');
+        }
+        if (!isLt2M) {
+          this.$message.error('上传头像图片大小不能超过 2MB!');
+        }
+        return isJPG && isLt2M;
+      }
   },
   computed: {
     ...mapGetters(["userInfo", "badge"])
@@ -126,6 +195,29 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
+    text-align: center;
+  }
+  .avatar {
+    width: 178px;
+    height: 178px;
+    display: block;
+  }
 .person-info-box {
   width: 400px;
   height: 800px;

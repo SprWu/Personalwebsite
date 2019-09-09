@@ -66,6 +66,20 @@ const router = new Router({
       }]
     },
     {
+      path: '/middle',
+      name: 'middle',
+      component: Layout,
+      children: [{
+        path: '/manage/middle',
+        name: 'manage/middle',
+        component: () => import('@/components/manage/middle')
+      },{
+        path: '/manage/manage',
+        name: 'manage/manage',
+        component: () => import('@/components/manage/manage')
+      }]
+    },
+    {
       path: '/mobileIndex',
       name: 'mobileIndex',
       component: () => import('@/components/index/mobileIndex')
@@ -138,6 +152,15 @@ router.beforeEach((to, from, next) => {
         router.push({
           name: 'index'
         })
+        break;
+      case '/manage/manage':
+        if(from.name != 'manage/middle') {
+          router.push({
+            name: 'index'
+          })
+        } else {
+          next()
+        }
         break;
       default:
         next();

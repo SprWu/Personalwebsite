@@ -45,12 +45,12 @@
           <el-input v-model.trim="form.username" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="密　码：" :label-width="'120px'">
-          <el-input type="password" v-model.trim="form.password" autocomplete="off"></el-input>
+          <el-input type="password" v-model.trim="form.password" @keydown.enter.native="submit" autocomplete="off"></el-input>
         </el-form-item>
       </el-form>
       <center>
         <el-button @click="cancel">取 消</el-button>
-        <el-button type="primary" @click="submit">登 录</el-button>
+        <el-button type="primary" @click="submit" >登 录</el-button>
         <div class="tip">
           还没注册？
           <a href="#" @click.prevent="toRegister">点我加入</a>
@@ -70,6 +70,8 @@
           <el-input
             v-model.trim="registerFrom.username"
             autocomplete="off"
+            :maxlength="12"
+            :minlength="12"
             @keyup="value=value.replace(/\s+/g,'')"
           ></el-input>
         </el-form-item>
@@ -127,9 +129,10 @@
 import myNav from "./nav";
 import personInfo from "./personInfo";
 import { Login, Register, sendReg } from "@/api/login";
-import { getPersonInfo, getRole } from "@/api/person";
+import { getPersonInfo, getRole, getUserImg } from "@/api/person";
 import { getToken } from "@/api/token";
 import { setTimeout } from "timers";
+import { baseURL } from "@/api/config"
 
 export default {
   name: "layout",
@@ -152,6 +155,17 @@ export default {
         callback();
       }
     };
+    var nameReg = (rule, value, callback) => {
+      if(value == "") {
+        callback(new Error("用户名不能为空！"))
+      } else if(!/\D/.test(value)) {
+        callback(new Error("用户名仅支持中英文、数字和下划线,且不能为纯数字"))
+      } else if(/[^\u4E00-\u9FA5\w]/.test(value)) {
+        callback(new Error("用户名仅支持中英文、数字和下划线,且不能为纯数字"))
+      } else {
+        callback()
+      }
+    }
     return {
       isLogin: getToken(),
       dialogShow: false,
@@ -174,7 +188,7 @@ export default {
         reg: ""
       },
       rules: {
-        username: [{ required: true, message: "用户名不能为空" }],
+        username: [{ validator: nameReg }],
         password: [{ required: true, message: "密码不能为空" }],
         confirm: [{ validator: validatePass2 }],
         email: [{ validator: emailReg }]
@@ -306,7 +320,8 @@ export default {
     getUserInfo() {
       getPersonInfo().then(res => {
         if (res.data.code === 200) {
-          this.$store.commit("setUserInfo", res.data.data);
+          let result = Object.assign({imgSrc: `${baseURL}:9000/getUserImg?username=${res.data.data.name}`},res.data.data)
+          this.$store.commit("setUserInfo", result);
           this.$store.commit("setBadge", res.data.badge);
           this.isLogin = true;
         } else {
