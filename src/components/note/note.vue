@@ -1,24 +1,29 @@
 <template>
-  <div class="note-box">
-    <img src="@/assets/images/report.png" class="report" @click="dialogShow = true" v-if="role" />
-    <div class="note" v-for="text in list" :key="text.id">
-      <p>{{ text.text }}</p>
+  <div class="note-main-container">
+    <div class="note-box">
+      <img src="@/assets/images/report.png" class="report" @click="dialogShow = true" v-if="role" />
+      <div class="note" v-for="text in list" :key="text.id">
+        <fieldset class="note-item">
+          <legend class="auther">{{ text.auther }}</legend>
+          <div class="text">{{ text.text }}</div>
+        </fieldset>
+      </div>
+      <el-dialog
+        title="新的笔记"
+        :visible.sync="dialogShow"
+        :modal="false"
+        :close-on-click-modal="false"
+        center
+      >
+        <el-input type="textarea" :rows="5" v-model="text" autofocus></el-input>
+        <footer style="marginTop: 20px">
+          <center>
+            <el-button @click="dialogShow = false">取 消</el-button>
+            <el-button type="primary" @click="createNote">上传</el-button>
+          </center>
+        </footer>
+      </el-dialog>
     </div>
-    <el-dialog
-      title="新的笔记"
-      :visible.sync="dialogShow"
-      :modal="false"
-      :close-on-click-modal="false"
-      center
-    >
-      <el-input type="textarea" :rows="5" v-model="text" autofocus></el-input>
-      <footer style="marginTop: 20px">
-        <center>
-        <el-button @click="dialogShow = false">取 消</el-button>
-        <el-button type="primary" @click="createNote">上传</el-button>
-      </center>
-      </footer>
-    </el-dialog>
   </div>
 </template>
 
@@ -29,7 +34,7 @@ export default {
   name: "note",
   data() {
     return {
-      role: this.$store.getters.role == "A",
+      role: ["A", "B"].includes(this.$store.getters.role),
       dialogShow: false,
       text: "",
       list: [{ id: 0, text: "暂无笔记！" }]
@@ -48,17 +53,19 @@ export default {
         this.$message.error("请输入内容！");
         return;
       }
-      newNote({ text: this.text }).then(res => {
-        if (res.data.code === 200) {
-          this.text = "";
-          this.$message({
-            message: res.data.data,
-            type: "success"
-          });
-          this.dialogShow = false;
-          this.init();
+      newNote({ text: this.text, auther: localStorage.getItem("name") }).then(
+        res => {
+          if (res.data.code === 200) {
+            this.text = "";
+            this.$message({
+              message: res.data.data,
+              type: "success"
+            });
+            this.dialogShow = false;
+            this.init();
+          }
         }
-      });
+      );
     }
   },
   created() {
@@ -68,6 +75,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.note-main-container {
+  width: 100%;
+  height: auto;
+  min-height: 800px;
+  // background: url("https://cdn.laod.wang/wp-content/uploads/2018/12/bg.png") repeat top left scroll;
+  background: url("../../assets/images/bg.png") repeat top left scroll;
+}
 .note-box {
   width: 1200px;
   min-height: 300px;
@@ -85,12 +99,18 @@ export default {
   .note {
     width: 100%;
     height: auto;
-    padding: 0 0 0 10px;
-    border-left: 3px solid #ccc;
-    border-bottom: 3px solid #ccc;
-    p {
-      text-indent: 2em;
+    .note-item {
+      margin-top: 10px;
+      .auther {
+         font-family: "MicroSoft YaHei";
+         font-weight: 400; 
+         border: 1px solid black;
+         text-align: right;
+      }
+      .text {
+      text-indent: 1em;
       line-height: 3vh;
+    }
     }
   }
 }

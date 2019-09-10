@@ -16,7 +16,7 @@ export default {
     data() {
         return {
             message: [],
-            role: this.$store.getters.role == "A"
+            role: ['A','B'].includes(this.$store.getters.role)
         }
     },
     methods: {
