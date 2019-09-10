@@ -46,7 +46,7 @@
     <div class="contact">
       <img class="contact-logo" src="@/assets/images/weibo.png" title="微博" @click="gotoWeibo" />
     </div>
-    <div class="tag">
+    <!-- <div class="tag">
       <el-badge :value="badge.message" class="item" type="primary">
         <el-tag>文章</el-tag>
       </el-badge>
@@ -56,7 +56,7 @@
       <el-badge :value="badge.diary" class="item" type="primary">
         <el-tag>日记</el-tag>
       </el-badge>
-    </div>
+    </div> -->
     <el-dialog
       title="编辑用户信息"
       :visible.sync="dialogShow"

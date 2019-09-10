@@ -5,7 +5,7 @@
     <h1>{{ message.title }}</h1>
     <div class="time" v-if="!loading">{{ message.time | formatDate }}</div>
     <div class="content" v-loading="loading">
-      <pre v-html="message.message"></pre>
+      <div style="textAlign:left" v-html="message.message"></div style="textAlign:left">
     </div>
   </div>
 </template>

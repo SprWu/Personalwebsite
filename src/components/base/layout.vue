@@ -188,10 +188,10 @@ export default {
         reg: ""
       },
       rules: {
-        username: [{ validator: nameReg }],
+        username: [{ validator: nameReg,  required: true }],
         password: [{ required: true, message: "密码不能为空" }],
-        confirm: [{ validator: validatePass2 }],
-        email: [{ validator: emailReg }]
+        confirm: [{ validator: validatePass2,  required: true }],
+        email: [{ validator: emailReg,  required: true }]
       }
     };
   },
@@ -322,7 +322,6 @@ export default {
         if (res.data.code === 200) {
           let result = Object.assign({imgSrc: `${baseURL}:9000/getUserImg?username=${res.data.data.name}`},res.data.data)
           this.$store.commit("setUserInfo", result);
-          this.$store.commit("setBadge", res.data.badge);
           this.isLogin = true;
         } else {
           localStorage.removeItem("token");
