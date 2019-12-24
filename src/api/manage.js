@@ -22,3 +22,11 @@ export function updateRole(data) {
         data: data
     })
 }
+
+export function getAllImages(data) {
+    return request({
+        url: '/allImages',
+        method: "GET",
+        params: data
+    })
+}

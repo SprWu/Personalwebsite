@@ -80,6 +80,16 @@ const router = new Router({
       }]
     },
     {
+      path: '/photo',
+      name: 'photo',
+      component: Layout,
+      children: [{
+        path: '/manage/photo',
+        name: 'manage/photo',
+        component: () => import('@/components/manage/photoManage')
+      }]
+    },
+    {
       path: '/mobileIndex',
       name: 'mobileIndex',
       component: () => import('@/components/index/mobileIndex')
@@ -162,6 +172,13 @@ router.beforeEach((to, from, next) => {
           next()
         }
         break;
+      case '/manage/photo':
+        if(isLogin) {
+          next()
+        } else {
+          router.push({name: 'index'})
+        }
+        break
       default:
         next();
         break;

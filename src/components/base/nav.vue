@@ -6,7 +6,11 @@
       <el-menu-item index="/note/index" >some笔记</el-menu-item>
       <el-menu-item index="/novel/index" :disabled="islogin" title="目前只限登陆后可看">看看小说</el-menu-item>
       <el-menu-item index="#" :disabled="true" title="暂时下线">聊天室</el-menu-item>
-      <el-menu-item index="/manage/middle" v-if="$store.getters.role == 'A'">管理中心</el-menu-item>
+      <el-submenu index="#" v-if="['A','B'].includes($store.getters.role)">
+        <template slot="title">管理中心</template>
+        <el-menu-item index="/manage/middle" class="scend-item" v-show="$store.getters.role == 'A'">用户管理</el-menu-item>
+        <el-menu-item index="/manage/photo" class="scend-item">图片管理</el-menu-item>
+      </el-submenu>
     </el-menu>
   </div>
 </template>
@@ -42,5 +46,8 @@ export default {
       text-decoration: none;
     }
   }
+}
+.scend-item {
+  text-align: center;
 }
 </style>
